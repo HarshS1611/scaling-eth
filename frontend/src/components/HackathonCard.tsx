@@ -27,32 +27,34 @@ const HackathonCard = ({ index, props }: any) => {
   // console.log(props);
 
   return (
-    <div className="relative bg-[#282828] border-2 border-[#3E3E3E] sm:w-auto rounded-lg">
+    <div className="relative bg-[#282828] border-2 border-[#3E3E3E] w-80 h-44 rounded-lg">
       <div className="flex flex-col">
         <div className="flex items-center justify-start w-full mx-5 mt-1.5 gap-x-5">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center w-full gap-5">
-              <h4 className={`text-2xl font-medium mt-2 text-white`}>
+            <div className="flex items-center gap-5">
+              <h4
+                className={`text-2xl font-thunder tracking-widest font-bold mt-2 text-white`}
+              >
                 {props.name}
               </h4>
               {status === "registration" ? (
-                <span className="bg-[#E9C500] bg-opacity-40 text-xs mt-2 font-medium text-[#F0CA00] px-3 py-1 rounded-md">
+                <span className="bg-[#E9C500] dm-mono-regular bg-opacity-40 text-xs mt-2 font-medium text-[#F0CA00] px-3 py-1 rounded-md">
                   Registration
                 </span>
               ) : status === "voting" ? (
-                <span className=" bg-[#03EF1B] bg-opacity-40 text-xs mt-2 font-medium text-[#03EF1B] px-3 py-1 rounded-md">
+                <span className=" bg-[#03EF1B] dm-mono-regular bg-opacity-40 text-xs mt-2 font-medium text-[#03EF1B] px-3 py-1 rounded-md">
                   Voting
                 </span>
               ) : (
-                <span className="bg-[#297FFF] bg-opacity-40 text-xs mt-2 font-medium text-[#297FFF] px-3 py-1 rounded-md">
+                <span className="bg-[#297FFF26] dm-mono-regular bg-opacity-40 text-xs mt-2 font-medium text-[#297FFF] px-3 py-1 rounded-md">
                   Results
                 </span>
               )}
             </div>
-            <p className="flex items-center gap-x-2 text-[#B2B4C6] text-sm my-1.5">
-              Organized by
+            <p className="flex items-center gap-x-2 text-[#C3C3C3] text-xs my-1.5">
+              by
               <GoOrganization className="bg-[#FF6624] text-white p-1 w-6 h-6 rounded-sm" />
-              <span className="text-blueLight font-medium">
+              <span className="text-white dm-mono-regular">
                 {props.organisedby}
               </span>
             </p>
@@ -76,16 +78,16 @@ const HackathonCard = ({ index, props }: any) => {
                 View more
             </Link> */}
       <div className="flex justify-between items-center gap-x-2 mx-5 mb-4">
-        <div className="flex gap-2">
-          <div className="flex relative ">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center relative ">
             <BsFillHexagonFill className="absolute left-0 w-5 h-6 text-[#1458DC]" />
             <BsFillHexagonFill className="absolute w-5 left-4 h-6 text-[#1458DC]" />
             <BsFillHexagonFill className="absolute w-5 h-6 left-8 text-[#1458DC]" />
           </div>
-          <p className="ml-12"> +100 Hackers</p>
+          <p className="ml-12 text-xs dm-mono-regular"> +100 Hackers</p>
         </div>
         <span
-          className={`text-xs font-medium text-white bg-[#45464D] px-3 py-1 rounded-md`}
+          className={`text-xs font-medium dm-mono-regular text-white bg-[#45464D] px-3 py-1 rounded-md`}
         >
           {props.category}
         </span>

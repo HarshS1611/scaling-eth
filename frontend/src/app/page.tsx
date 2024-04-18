@@ -84,8 +84,8 @@ export default function Home() {
     <main className="">
       <Navbar />
       <div className="flex">
-        <div className="flex w-[75%] flex-col">
-          <h1 className="text-white mx-20 text-4xl font-thunder font-bold mt-5 mb-0.5">
+        <div className="flex flex-col">
+          <h1 className="text-white mx-20 text-4xl font-thunder tracking-wider font-extrabold mt-5 mb-0.5">
             ALL HACKATHONS
           </h1>
           <div className="mx-20 my-5 flex gap-6">
@@ -95,23 +95,23 @@ export default function Home() {
               All
             </button>
             <button
-              className={`px-5 py-2 rounded-lg text-base my-5 bg-neutral-700 text-[#C3C3C3]`}
+              className={`px-5 py-2 rounded-lg dm-mono-regular text-base my-5 bg-neutral-700 text-[#C3C3C3]`}
             >
               Registration
             </button>
             <button
-              className={`px-5 py-2 rounded-lg text-base my-5  bg-neutral-700 text-[#C3C3C3]`}
+              className={`px-5 py-2 rounded-lg dm-mono-regular text-base my-5  bg-neutral-700 text-[#C3C3C3]`}
             >
               Voting
             </button>
             <button
-              className={`px-5 py-2 rounded-lg text-base my-5 bg-neutral-700 text-[#C3C3C3]`}
+              className={`px-5 py-2 rounded-lg dm-mono-regular text-base my-5 bg-neutral-700 text-[#C3C3C3]`}
             >
               Results
             </button>
           </div>
           <div className="flex flex-wrap justify-start mx-20 w-full gap-x-5 items-center">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:w-[90%] xl:grid-cols-3  gap-10 my-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:w-[90%] xl:grid-cols-3 gap-10 my-2">
               {hackathons.map((hackathon, index) => (
                 <HackathonCard index={index} props={hackathon} />
               ))}
