@@ -1,6 +1,6 @@
 'use client'
 
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '5623bd8168bfc38eb8524655b6647f7c'
@@ -13,6 +13,30 @@ const mainnet = {
   explorerUrl: 'https://etherscan.io',
   rpcUrl: 'https://cloudflare-eth.com'
 }
+const arbitrumTestnet = {
+  chainId: 421614,
+  name: 'Arbitrum Sepolia',
+  currency: 'ETH',
+  explorerUrl: 'https://sepolia-explorer.arbitrum.io',
+  rpcUrl: 'https://arbitrum-sepolia.blockpi.network/v1/rpc/public '
+};
+
+const gnosisTestnet = {
+  chainId: 10200,
+  name: 'Gnosis Chiado Testnet',
+  currency: 'XDAI',
+  explorerUrl: 'https://rpc.chiadochain.net',
+  rpcUrl: 'https://blockscout.chiadochain.net'
+};
+
+const availTestnet = {
+  chainId: 1115,
+  name: 'Core testnet',
+  currency: 'tCORE',
+  explorerUrl: 'https://cchain.explorer.avax-test.network',
+  rpcUrl: 'https://rpc.test.btcs.network'
+};
+
 
 // 3. Create a metadata object
 const metadata = {
@@ -21,7 +45,6 @@ const metadata = {
   url: 'https://mywebsite.com', // origin must match your domain & subdomain
   icons: ['https://avatars.mywebsite.com/']
 }
-
 // 4. Create Ethers config
 const ethersConfig = defaultConfig({
   /*Required*/
@@ -38,12 +61,13 @@ const ethersConfig = defaultConfig({
 // 5. Create a Web3Modal instance
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet],
+  chains: [mainnet,arbitrumTestnet,gnosisTestnet,availTestnet],
   projectId,
+  allowUnsupportedChain: true,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
   enableOnramp: true // Optional - false as default
 })
-
+//@ts-ignore
 export function Web3Modal({ children }) {
   return children
 }
