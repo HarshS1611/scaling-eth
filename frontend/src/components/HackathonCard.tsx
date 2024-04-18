@@ -13,51 +13,58 @@ import { BsFillHexagonFill } from "react-icons/bs";
 
 // const ModelCard: FC<{ model: any }> = ({ model }) => {
 const HackathonCard = ({ index, props }: any) => {
-    const [status, setStatus] = useState("registration");
+  const [status, setStatus] = useState("registration");
 
-    useEffect(() => {
-        if (index === 0) {
-            setStatus("registration")
-        } else if (index === 1) {
-            setStatus("voting")
-        } else {
-            setStatus("result")
-        }
+  useEffect(() => {
+    if (index === 0) {
+      setStatus("registration");
+    } else if (index === 1) {
+      setStatus("voting");
+    } else {
+      setStatus("result");
+    }
+  }, [index]);
+  // console.log(props);
 
-    }, [index])
-    // console.log(props);
-
-    return (
-        <div className="relative bg-[#282828] sm:w-auto rounded-lg">
-            <div className="flex flex-col">
-                <div className="flex items-center justify-start w-full mx-5 mt-1.5 gap-x-5">
-                    <div className="flex flex-col gap-2">
-                        <div className="flex items-center w-full gap-5">
-                            <h4 className={`text-2xl font-medium mt-2 text-white`}>{props.name}</h4>
-                            {status === "registration" ? (
-                                <span className="bg-[#E9C500] bg-opacity-40 text-xs mt-2 font-medium text-[#F0CA00] px-3 py-1 rounded-md">Registration</span>
-                            ) : status === "voting" ? (
-                                <span className=" bg-[#03EF1B] bg-opacity-40 text-xs mt-2 font-medium text-[#03EF1B] px-3 py-1 rounded-md">Voting</span>
-                            ) : (
-                                <span className="bg-[#297FFF] bg-opacity-40 text-xs mt-2 font-medium text-[#297FFF] px-3 py-1 rounded-md">Results</span>
-                            )}
-                        </div>
-                        <p className="flex items-center gap-x-2 text-[#B2B4C6] text-sm my-1.5">
-                            Organized by
-                            <GoOrganization className="bg-[#FF6624] text-white p-1 w-6 h-6 rounded-sm" />
-                            <span className="text-blueLight font-medium">{props.organisedby}</span>
-                        </p>
-
-                    </div>
-                </div>
-                <hr className="border-[#696969] my-4 mx-5" />
-                {/* <p className="text-[#B2B4C6] text-sm px-5">{props.description}</p>
+  return (
+    <div className="relative bg-[#282828] border-2 border-[#3E3E3E] sm:w-auto rounded-lg">
+      <div className="flex flex-col">
+        <div className="flex items-center justify-start w-full mx-5 mt-1.5 gap-x-5">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center w-full gap-5">
+              <h4 className={`text-2xl font-medium mt-2 text-white`}>
+                {props.name}
+              </h4>
+              {status === "registration" ? (
+                <span className="bg-[#E9C500] bg-opacity-40 text-xs mt-2 font-medium text-[#F0CA00] px-3 py-1 rounded-md">
+                  Registration
+                </span>
+              ) : status === "voting" ? (
+                <span className=" bg-[#03EF1B] bg-opacity-40 text-xs mt-2 font-medium text-[#03EF1B] px-3 py-1 rounded-md">
+                  Voting
+                </span>
+              ) : (
+                <span className="bg-[#297FFF] bg-opacity-40 text-xs mt-2 font-medium text-[#297FFF] px-3 py-1 rounded-md">
+                  Results
+                </span>
+              )}
+            </div>
+            <p className="flex items-center gap-x-2 text-[#B2B4C6] text-sm my-1.5">
+              Organized by
+              <GoOrganization className="bg-[#FF6624] text-white p-1 w-6 h-6 rounded-sm" />
+              <span className="text-blueLight font-medium">
+                {props.organisedby}
+              </span>
+            </p>
+          </div>
+        </div>
+        <hr className="border-[#696969] my-4 mx-5" />
+        {/* <p className="text-[#B2B4C6] text-sm px-5">{props.description}</p>
                 <div className="flex items-center gap-x-3.5 mx-5">
                     <p className="flex gap-x-1 text-[#B2B4C6] text-xs">Voters: {props.length}</p>
                 </div> */}
-
-            </div>
-            {/* <Link
+      </div>
+      {/* <Link
                 href={
                     status === "registration" ? `/details/${index}` : status === "voting" ? `/vote/${index}` : `/dashboard`
                 }
@@ -68,23 +75,24 @@ const HackathonCard = ({ index, props }: any) => {
             >
                 View more
             </Link> */}
-            <div className="flex justify-between items-center gap-x-2 mx-5 mb-4">
-                <div className="flex gap-2">
-                    <div className="flex relative "> 
-                    <BsFillHexagonFill className="absolute left-0 w-5 h-6 text-[#1458DC]"/>
-                    <BsFillHexagonFill className="absolute w-5 left-4 h-6 text-[#1458DC]"/>
-                    <BsFillHexagonFill className="absolute w-5 h-6 left-8 text-[#1458DC]"/>
-                    </div>
-                   <p className="ml-12"> +100 Hackers</p>
-                </div>
-                <span className={`text-xs font-medium text-white bg-[#45464D] px-3 py-1 rounded-md`}>
-                    {props.category}
-                </span>
-                {/* <Image src="/assets/demo-icon.svg" width={15} height={15} alt="demo" /> */}
-
-            </div>
+      <div className="flex justify-between items-center gap-x-2 mx-5 mb-4">
+        <div className="flex gap-2">
+          <div className="flex relative ">
+            <BsFillHexagonFill className="absolute left-0 w-5 h-6 text-[#1458DC]" />
+            <BsFillHexagonFill className="absolute w-5 left-4 h-6 text-[#1458DC]" />
+            <BsFillHexagonFill className="absolute w-5 h-6 left-8 text-[#1458DC]" />
+          </div>
+          <p className="ml-12"> +100 Hackers</p>
         </div>
-    );
+        <span
+          className={`text-xs font-medium text-white bg-[#45464D] px-3 py-1 rounded-md`}
+        >
+          {props.category}
+        </span>
+        {/* <Image src="/assets/demo-icon.svg" width={15} height={15} alt="demo" /> */}
+      </div>
+    </div>
+  );
 };
 
 export default HackathonCard;
