@@ -67,24 +67,11 @@ export default function Home() {
     fetchHackathons();
   }, [walletProvider, chainId]);
 
-  // useEffect(() => {
-  //   // Mock hackathon data with organizer
-  //   const mockHackathons = [
-  //     { name: "Hackathon 1", type: "Web Development", hackers: 50, organizer: "John Doe" },
-  //     { name: "Hackathon 2", type: "Data Science", hackers: 30, organizer: "Jane Smith" },
-  //     { name: "Hackathon 3", type: "Blockchain", hackers: 40, organizer: "Alice Johnson" },
-  //     { name: "Hackathon 4", status: "Active", type: "Machine Learning", hackers: 60, organizer: "Bob Brown" },
-  //     { name: "Hackathon 5", type: "Cybersecurity", hackers: 25, organizer: "Charlie Davis" },
-  //   ];
-
-  //   setHackathons(mockHackathons);
-  // }, []);
-
   return (
     <main className="">
       <Navbar />
       <div className="flex">
-        <div className="flex flex-col">
+        <div className="flex flex-col w-[75%]">
           <h1 className="text-white mx-20 text-4xl font-thunder tracking-wider font-extrabold mt-5 mb-0.5">
             ALL HACKATHONS
           </h1>
