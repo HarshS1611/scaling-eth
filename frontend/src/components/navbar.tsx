@@ -16,7 +16,7 @@ export default function Navbar(props: NavProps) {
                 </div>
             </div>}
             <div className="mr-4">
-                <button className="flex justify-end w-max bg-[#4C76FD] px-4 py-1.5 rounded-lg"> Create Event</button>
+                <button className="flex dm-mono-regular justify-end w-max bg-[#4C76FD] px-4 py-1.5 rounded-lg"> Create Event</button>
             </div>
             <div className="flex justify-end w-max">
                 <w3m-button />
