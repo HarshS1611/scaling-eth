@@ -1,4 +1,4 @@
-import { TbWallet } from "react-icons/tb";
+import { BiSolidEditAlt } from "react-icons/bi";
 import Image from "next/image";
 import { IoTicketSharp } from "react-icons/io5";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -9,9 +9,11 @@ export default function ProfileSidbar({ balance }: { balance: number }) {
   return (
     <div className="bg-[#282828] min-h-screen w-[25%]">
       <div className="flex items-center mx-10 my-5 justify-end text-white">
-        <div className="bg-black dm-mono-regular flex gap-2 p-4 rounded-md items-center">
-          <TbWallet className="h-6 w-6" /> Wallet Balance :
-          <span className="dm-mono-medium">{balance}</span> xHacks
+        <div className="bg-white text-black dm-mono-regular flex gap-2 p-4 rounded-md items-center">
+          <BiSolidEditAlt className="h-6 w-6" /> EDIT PROFILE
+        </div>
+        <div>
+
         </div>
       </div>
       <div className="flex items-center mx-10 my-10 gap-10 justify-between text-white">

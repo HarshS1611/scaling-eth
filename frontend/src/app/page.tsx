@@ -69,7 +69,7 @@ export default function Home() {
 
   return (
     <main className="">
-      <Navbar />
+      <Navbar balance={(xHackToken).toString()} />
       <div className="flex">
         <div className="flex flex-col w-[75%]">
           <h1 className="text-white mx-20 text-4xl font-thunder tracking-wider font-extrabold mt-5 mb-0.5">
@@ -98,7 +98,7 @@ export default function Home() {
             </button>
           </div>
           <div className="flex flex-wrap justify-start mx-20 w-full gap-x-5 items-center">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:w-[90%] xl:grid-cols-3 gap-10 my-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:w-[90%] xl:grid-cols-3 gap-6 xl:gap-10 my-2">
               {hackathons.map((hackathon, index) => (
                 <HackathonCard index={index} props={hackathon} />
               ))}
