@@ -72,7 +72,7 @@ export default function Home() {
       <Navbar balance={(xHackToken).toString()} />
       <div className="flex">
         <div className="flex flex-col w-[75%]">
-          <h1 className="text-white mx-20 text-4xl font-thunder tracking-wider font-extrabold mt-5 mb-0.5">
+          <h1 className="text-white mx-20 text-4xl font-thunder tracking-wider font-black mt-5 mb-0.5">
             ALL HACKATHONS
           </h1>
           <div className="mx-20 my-5 flex gap-6">

@@ -43,16 +43,25 @@ const SponsorHackModal: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
 
     if (chainId === 1115) {
       const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-      const tx = await resp.sponsorHackathon(id, sponsorData.name, sponsorData.threshold, {
-        value: parseEther(sponsorData.price),
-      });
+      const tx = await resp.sponsorHackathon(
+        id,
+        sponsorData.name,
+        sponsorData.threshold,
+        {
+          value: parseEther(sponsorData.price),
+        }
+      );
       await tx.wait();
-
     } else if (chainId === 421614) {
       const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-      const tx = await resp.sponsorHackathon(id, sponsorData.name, sponsorData.threshold, {
-        value: parseEther(sponsorData.price),
-      });
+      const tx = await resp.sponsorHackathon(
+        id,
+        sponsorData.name,
+        sponsorData.threshold,
+        {
+          value: parseEther(sponsorData.price),
+        }
+      );
       await tx.wait();
     }
 
@@ -63,61 +72,82 @@ const SponsorHackModal: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
   return (
     <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none backdrop-filter backdrop-blur-sm ">
-      <div className="relative w-auto my-6 mx-auto">
-        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[48rem] bg-[#1a1e27] outline-none focus:outline-none ">
-          <div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t ">
-            <h3 className="text-3xl font-semibold text-white">Sponsor this Hackathon</h3>
-            <button className="bg-transparent border-0 text-black float-right" onClick={onClose}>
-              <span className="text-black opacity-7 h-8 w-8 text-xl block bg-gray-400 py-0 rounded-full">x</span>
+      <div className="relative my-6 mx-auto">
+        <div className="border-0 rounded-lg shadow-lg relative flex flex-col h-[600px] w-[600px] bg-[#282828] outline-none focus:outline-none ">
+          <div className="flex items-start justify-between pt-5 px-5">
+            <h3 className="text-4xl px-5 font-semibold font-thunder text-white">
+              SPONSOR THIS HACKATHON
+            </h3>
+            <button
+              className="bg-transparent border-0 text-black float-right"
+              onClick={onClose}
+            >
+              <span className="text-black opacity-7 h-8 w-8 text-xl block bg-gray-400 py-0 rounded-full">
+                x
+              </span>
             </button>
           </div>
           <div className="relative p-3 flex-auto">
-            <form className="bg-transparent shadow-md rounded px-8 pt-3 pb-8 w-full" onSubmit={handleSubmit}>
-              <label className="block text-white text-sm font-semibold mb-1">Sponsor Name *</label>
+            <form
+              className="bg-transparent rounded px-8 pt-3 pb-8 w-full"
+              onSubmit={handleSubmit}
+            >
+              <label className="block text-white text-sm font-semibold mb-1">
+                Sponsor Name *
+              </label>
               <input
                 type="text"
-                className="shadow appearance-none border rounded w-full text-white
-                                       block h-10 bg-[#ffffff12] text-white rounded-lg px-2 border border-slate-600 py-5 mt-2 mb-2 mr-10 text-sm w-full focus:outline-none
-                                        transition transform duration-100 ease-out"
+                className="w-full h-14 block bg-[#1A1A1A] placeholder:text-[#838383] text-white rounded-md px-2 py-5 mt-2 mb-2 mr-10 text-sm focus:outline-none transition transform duration-100 ease-out"
                 required
                 value={sponsorData.name}
-                onChange={e => setSponsorData({ ...sponsorData, name: e.target.value })}
-              />
-              <label className="block text-white text-sm font-semibold">Threshold *</label>
-              <textarea
-                value={sponsorData.threshold}
-                onChange={e =>
-                  setSponsorData({
-                    ...sponsorData,
-                    threshold: e.target.value,
-                  })
+                placeholder="Enter your name here"
+                onChange={(e) =>
+                  setSponsorData({ ...sponsorData, name: e.target.value })
                 }
-                id="description"
-                className="
-                                            shadow appearance-none border rounded w-full text-white
-                                            block h-fit bg-[#ffffff12] text-white rounded-lg px-2 border border-slate-600 py-2 mt-3 mb-2 mr-10 text-sm w-full focus:outline-none
-                            transition transform duration-100 ease-out resize-none 
-                            "
-                required
               />
-              <label className="block text-white text-sm font-semibold mb-1">Price(ETH)*</label>
+              <label className="block text-white my-5 text-sm font-semibold">
+                Threshold for participants *
+              </label>
               <input
-                type="text"
-                className="shadow appearance-none border rounded w-full text-white
-                                       block h-10 bg-[#ffffff12] text-white rounded-lg px-2 border border-slate-600 py-5 mt-2 mb-2 mr-10 text-sm w-full focus:outline-none
-                                        transition transform duration-100 ease-out"
-                value={sponsorData.price}
-                onChange={e => setSponsorData({ ...sponsorData, price: e.target.value })}
+                type="range"
+                min="0"
+                max="1000"
+                value={sponsorData.threshold}
+                onChange={(e) =>
+                  setSponsorData({ ...sponsorData, threshold: e.target.value })
+                }
+                className="w-full custom-progress-bar h-14 block bg-[#1A1A1A] placeholder:text-[#838383] text-white rounded-md px-2 py-5 mt-2 mb-2 mr-10 text-sm focus:outline-none transition transform duration-100 ease-out"
                 required
-                min={0}
-                max={100}
               />
+              <div className="flex items-center p-3.5 rounded-md bg-[#4C76FD] bg-opacity-10 text-xs text-[#4C76FD]">
+                If threshold value is not met, your tokens would not be invested
+              </div>
+              <label className="block mt-5 mb-3 text-white text-sm font-semibold">
+                Amount*
+              </label>
+              <div className="flex items-center h-14 bg-[#1A1A1A] rounded-md justify-between">
+                <div className="bg-[#282828] rounded-md text-white mx-2 p-3">
+                  ETH
+                </div>
+                <input
+                  type="number"
+                  className="w-full bg-[#1A1A1A] h-14 placeholder:text-[#838383] text-white rounded-md px-2 py-5 mt-2 mb-2 mr-10 text-sm focus:outline-none transition transform duration-100 ease-out"
+                  value={sponsorData.price}
+                  onChange={(e) =>
+                    setSponsorData({ ...sponsorData, price: e.target.value })
+                  }
+                  placeholder="Enter the price here"
+                  required
+                  min={0}
+                  max={100}
+                />
+              </div>
               <button
-                className="text-white bg-sky-700 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
+                className="text-black w-full mt-10 bg-white font-medium uppercase text-base px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                 type="submit"
-              // onClick={handleAddTask}
+                // onClick={handleAddTask}
               >
-                Confirm Details
+                SUBMIT DETAILS
               </button>
             </form>
           </div>

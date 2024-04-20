@@ -25,11 +25,21 @@ const HackathonCard = ({ index, props }: any) => {
   }, [index]);
   // console.log(props);
 
+  console.log(props[0]);
+
   return (
     <>
-      <Link key={props.id} href={
-        status === "registration" ? `/details/${index}` : status === "voting" ? `/vote/${index}` : `/dashboard`
-      } className="relative bg-[#282828] border-2 border-[#3E3E3E] w-96 h-44 rounded-lg">
+      <Link
+        key={props.id}
+        href={
+          status === "registration"
+            ? `/details/${index}`
+            : status === "voting"
+            ? `/vote/${index}`
+            : `/dashboard`
+        }
+        className="relative bg-[#282828] border-2 border-[#3E3E3E] w-96 h-44 rounded-lg"
+      >
         <div className="flex flex-col">
           <div className="flex items-center justify-start w-full mx-5 mt-1.5 gap-x-5">
             <div className="flex flex-col gap-2">
