@@ -1,8 +1,21 @@
 "use client";
+
 import { TbWallet } from "react-icons/tb";
 import Image from "next/image";
 import { useState } from "react";
 import CreateHackModal from "./CreateHackModal";
+import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector';
+import {
+  DynamicContextProvider,
+  DynamicWidget,
+} from '@dynamic-labs/sdk-react-core';
+import {
+  createConfig,
+  WagmiProvider,
+  useAccount,
+} from 'wagmi';
+
+
 interface NavProps {
   balance?: string;
 }
@@ -36,7 +49,8 @@ export default function Navbar(props: NavProps) {
         </button>
       </div>
       <div className="flex justify-end w-max">
-        <w3m-button />
+      <DynamicWidget />
+            <AccountInfo />
       </div>
       {modalOpen && (
         <CreateHackModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
@@ -44,3 +58,16 @@ export default function Navbar(props: NavProps) {
     </div>
   );
 }
+function AccountInfo() {
+  const { address, isConnected, chain } = useAccount();
+  console.log(chain)
+  return (
+    <div>
+      <p>
+        wagmi connected: {isConnected ? 'true' : 'false'}
+      </p>
+      <p>wagmi address: {address}</p>
+      <p>wagmi network: {chain?.id}</p>
+    </div>
+  );
+};
