@@ -11,7 +11,7 @@ const SponsorCard = ({ index, props }: any) => {
 //    console.log(props)
     return (
         <div className="relative bg-[#1A1A1A] w-[1000px] sm:w-auto rounded-lg shadow-xl">
-            <div className="flex flex-col">
+            {props && <div className="flex flex-col">
                 <div className="flex items-center justify-start mx-5 mt-1.5 gap-x-5">
                     <div className="flex items-center justify-between w-full gap-10 flex-row">
                         <h4 className={`text-xs xl:text-lg font-medium text-white`}> {(props.name).toUpperCase()}</h4>
@@ -34,7 +34,7 @@ const SponsorCard = ({ index, props }: any) => {
                 </div>
                
             </div>
-           
+           }
         </div>
     );
 };

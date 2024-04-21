@@ -12,6 +12,7 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, parseEther } from "ethers";
 
+import { chainIdToContractMap } from "@/context/allchains";
 
 
 const MiscCard = ({ title, map, voters, onClick }: any) => {
