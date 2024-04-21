@@ -8,8 +8,6 @@ import CHackathonManager from "../artifacts/contracts/HackathonManager.sol/CHack
 import { Acontract_add, Ccontract_add } from "../artifacts/config";
 import { ethers } from "ethers";
 import { FaArrowLeft } from "react-icons/fa";
-import Web3 from "web3";
-import Web3Modal from "web3modal";
 
 const GoBackbtn = () => {
     // useEffect(() => {
