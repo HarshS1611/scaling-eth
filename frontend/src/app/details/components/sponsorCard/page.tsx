@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import Link from "next/link";
 import { formatUnits } from "ethers";
-import Web3 from "web3";
-import Web3Modal from "web3modal";
+
 
 import { useParams } from "next/navigation";
 
