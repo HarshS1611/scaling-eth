@@ -12,6 +12,7 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers";
 import { UploadIcon } from "@/assets/UploadIcon";
+import lighthouse from "@lighthouse-web3/sdk";
 
 interface ModalFormProps {
   modalOpen: boolean;
@@ -22,8 +23,17 @@ const EditProfileModal: React.FC<ModalFormProps> = ({
   modalOpen,
   setModalOpen,
 }) => {
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const apiKey = "0df6982a.aa463e02d2e14a8289746570ae1aeabd";
+  const [file, setFile] = useState<any>();
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+    // console.log(profileImage?.webkitRelativePath);
+    // console.log(profileImage);
+    const formData = new FormData();
+    formData.append("file", file);
+    const uploadResponse = await lighthouse.upload(formData, apiKey);
+    console.log(uploadResponse);
   };
 
   if (!modalOpen) return null;
@@ -48,7 +58,11 @@ const EditProfileModal: React.FC<ModalFormProps> = ({
             <UploadIcon className="fill-white mx-auto mt-3" />
             <input
               type="file"
-              //   onChange={(e) => setFile(e.target.files?.[0] || null)}
+              onChange={(e) => {
+                if (e.target.files) {
+                  setFile(e.target.files[0]);
+                }
+              }}
               className="text-[#3F3F3F] cursor-pointer opacity-0 bg-white rounded-xl p-3 absolute inset-0"
             />
             <button className="text-white border-white border p-3 dm-mono-regular text-sm font-semibold mt-2 mx-auto">
@@ -58,7 +72,7 @@ const EditProfileModal: React.FC<ModalFormProps> = ({
           <div className="relative p-3 flex-auto">
             <form
               className="bg-transparent rounded px-8 pt-3 pb-8 w-full"
-              onSubmit={handleSubmit}
+              //   onSubmit={handleSubmit}
             >
               <label className="dm-mono-regular block text-white text-sm font-semibold mb-1">
                 Name *
@@ -66,7 +80,7 @@ const EditProfileModal: React.FC<ModalFormProps> = ({
               <input
                 type="text"
                 className="w-full dm-mono-regular h-14 block bg-[#1A1A1A] placeholder:text-[#838383] text-white rounded-md px-2 py-5 mt-2 mb-2 mr-10 text-sm focus:outline-none transition transform duration-100 ease-out"
-                required
+                // required
                 // value={hackData._name}
                 placeholder="Enter name here"
                 // onChange={(e) =>
@@ -74,7 +88,10 @@ const EditProfileModal: React.FC<ModalFormProps> = ({
                 // }
               />
 
-              <button className="dm-mono-medium bg-white text-black w-full h-14 rounded-md mt-5">
+              <button
+                onClick={handleSubmit}
+                className="dm-mono-medium bg-white text-black w-full h-14 rounded-md mt-5"
+              >
                 UPDATE DETAILS
               </button>
             </form>
