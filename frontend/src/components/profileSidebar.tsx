@@ -5,11 +5,31 @@ import { IoTicketSharp } from "react-icons/io5";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { AiFillTrophy } from "react-icons/ai";
 import { SiSecurityscorecard } from "react-icons/si";
-import { useState } from "react";
 import EditProfileModal from "./EditProfileModal";
+import {
+  useWeb3ModalAccount,
+} from "@web3modal/ethers/react";
+import { queryAttestations } from "../utils/ethSign";
+import { useEffect, useState } from "react";
+
+
+
 
 export default function ProfileSidbar({ balance }: { balance: number }) {
+  const { address } = useWeb3ModalAccount();
   const [editModalOpen, setEditModalOpen] = useState(false);
+
+  async function getPremiumBool() {
+    const resp = await queryAttestations(address)
+    if (resp.success)
+      setPremium(true);
+  }
+
+  const [premium, setPremium] = useState(false);
+
+  useEffect(() => {
+    getPremiumBool();
+  })
 
   return (
     <div className="bg-[#282828] min-h-screen w-[25%]">
@@ -26,9 +46,16 @@ export default function ProfileSidbar({ balance }: { balance: number }) {
         <div className="text-4xl font-thunder font-bold capitalize tracking-wider">
           <p>HELLO,</p>
           <p>HARSH</p>
+          <div className="text-2xl font-thunder font-bold capitalize tracking-wider text-amber-300">
+
+            {premium && "Premium"}
+          </div>
         </div>
         <div>
-          <Image src="/profile.png" alt="Profile" width={200} height={150} />
+          {premium && <Image src="/premium.png" alt="Profile" width={200} height={150} />}
+          {!premium && <Image src="/profile.png" alt="Profile" width={200} height={150} />}
+
+
         </div>
       </div>
       <div className="mx-10 flex flex-col gap-5">
