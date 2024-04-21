@@ -14,6 +14,7 @@ import {
 import { BrowserProvider, Contract, formatUnits } from "ethers";
 import HackathonCard from "@/components/HackathonCard";
 import ProfileSidbar from "@/components/profileSidebar";
+import { chainIdToContractMap } from "@/context/allchains";
 
 export default function Home() {
   const [hackathons, setHackathons] = useState<
@@ -28,6 +29,10 @@ export default function Home() {
   const [xHackToken, setXHackToken] = useState(0);
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
+  //@ts-ignore
+  const contractDetails = chainIdToContractMap[chainId];
+  console.log(contractDetails)
+
   useEffect(() => {
     const fetchHackathons = async () => {
       if (!walletProvider) {
@@ -36,32 +41,17 @@ export default function Home() {
       }
       const ethersProvider = new BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
+      const resp = new Contract(
+        contractDetails?.address,
+        contractDetails?.abi,
+        ethersProvider
+      );
+      const tx = await resp.getAllHackathons();
+      setHackathons(tx);
+      const balance = await resp.balanceOf(address);
+      console.log(formatUnits(balance, 18));
+      setXHackToken(parseFloat(formatUnits(balance, 18)));
 
-      if (chainId === 1115) {
-        console.log(chainId);
-        const resp = new Contract(
-          Ccontract_add,
-          CHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getAllHackathons();
-        setHackathons(tx);
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      } else if (chainId === 421614) {
-        console.log(chainId);
-        const resp = new Contract(
-          Acontract_add,
-          AHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getAllHackathons();
-        setHackathons(tx);
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      }
     };
 
     fetchHackathons();

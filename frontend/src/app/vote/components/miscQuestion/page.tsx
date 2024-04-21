@@ -1,4 +1,6 @@
 // components/Question.js
+"use client";
+
 import React,{useState} from "react";
 import Card from "../card/page";
 import MiscCard from "../miscCard/page";
@@ -10,14 +12,11 @@ import {
   useWeb3ModalAccount,
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, parseEther } from "ethers";
+import { chainIdToContractMap } from "@/context/allchains";
 
-interface QuestionProps {
-  question: string;
-  options: string[];
-  onOptionSelect: (option: string) => void;
-}
 
-const MiscQuestion: React.FC<QuestionProps> = ({question, options, onOptionSelect }) => {
+
+const MiscQuestion = ({question, options, onOptionSelect }:any) => {
   const [voteCount, setVoteCount] = useState(0);
   const handleVoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Parse the input value as a number and update the voteCount state
@@ -26,44 +25,26 @@ const MiscQuestion: React.FC<QuestionProps> = ({question, options, onOptionSelec
   };
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
-  const vote = async () => {
+  //@ts-ignore
+  const contractDetails = chainIdToContractMap[chainId];
+    const vote = async () => {
     if (!walletProvider) {
       console.log("Wallet provider is not available.");
       return;
     }
     const ethersProvider = new BrowserProvider(walletProvider);
     const signer = await ethersProvider.getSigner();
+    const resp = new Contract(
+      contractDetails?.address,
+      contractDetails?.abi,
+      signer
+    );
+    const balance = await resp.balanceOf(address);
+    const approval = await resp.approve(Ccontract_add, balance);
+    const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
+    await tx.wait();
+    onOptionSelect(options[1])
 
-    if (chainId === 1115) {
-      console.log(chainId);
-      const resp = new Contract(
-        Ccontract_add,
-        CHackathonManager.abi,
-        signer
-      );
-      const balance = await resp.balanceOf(address);
-      const approval = await resp.approve(Ccontract_add, balance);
-      const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
-      onOptionSelect(options[1])
-
-      await tx.wait();
-      console.log(tx);
-
-    } else if (chainId === 421614) {
-      console.log(chainId);
-      const resp = new Contract(
-        Acontract_add,
-        AHackathonManager.abi,
-        signer
-      );
-      const balance = await resp.balanceOf(address);
-      onOptionSelect(options[1])
-
-      const approval = await resp.approve(Acontract_add, balance);
-      const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
-      await tx.wait();
-      console.log(tx);
-    }
   };
 
   if (!options || options.length < 6) {

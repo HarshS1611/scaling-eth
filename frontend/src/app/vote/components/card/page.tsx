@@ -11,18 +11,10 @@ import {
   useWeb3ModalAccount,
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, parseEther } from "ethers";
+import { chainIdToContractMap } from "@/context/allchains";
 
-interface CardProps {
-  title: string;
-  map: string;
-  tag1: string;
-  tag2: string;
-  description: string;
-  voters: string;
-  onClick: () => void;
-}
 
-const Card: React.FC<CardProps> = ({ title, map, tag1, tag2, description, voters, onClick }) => {
+const Card= ({ title, map, tag1, tag2, description, voters, onClick }: any) => {
   const [voteCount, setVoteCount] = useState(0);
   const handleVoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Parse the input value as a number and update the voteCount state
@@ -31,6 +23,8 @@ const Card: React.FC<CardProps> = ({ title, map, tag1, tag2, description, voters
   };
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
+    //@ts-ignore
+    const contractDetails = chainIdToContractMap[chainId];
   const vote = async () => {
     if (!walletProvider) {
       console.log("Wallet provider is not available.");
@@ -38,34 +32,16 @@ const Card: React.FC<CardProps> = ({ title, map, tag1, tag2, description, voters
     }
     const ethersProvider = new BrowserProvider(walletProvider);
     const signer = await ethersProvider.getSigner();
-
-    if (chainId === 1115) {
-      console.log(chainId);
-      const resp = new Contract(
-        Ccontract_add,
-        CHackathonManager.abi,
-        signer
-      );
-      const balance = await resp.balanceOf(address);
-      const approval = await resp.approve(Ccontract_add, balance);
-      const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
-      await tx.wait();
-      console.log(tx);
-
-    } else if (chainId === 421614) {
-      console.log(chainId);
-      const resp = new Contract(
-        Acontract_add,
-        AHackathonManager.abi,
-        signer
-      );
-      const balance = await resp.balanceOf(address);
-
-      const approval = await resp.approve(Acontract_add, balance);
-      const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
-      await tx.wait();
-      console.log(tx);
-    }
+    const resp = new Contract(
+      contractDetails?.address,
+     contractDetails?.abi,
+      signer
+    );
+    const balance = await resp.balanceOf(address);
+    const approval = await resp.approve(Ccontract_add, balance);
+    const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
+    await tx.wait();
+    console.log(tx);
 
 
 

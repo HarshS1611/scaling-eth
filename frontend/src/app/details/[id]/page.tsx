@@ -22,6 +22,7 @@ import { SiSecurityscorecard } from "react-icons/si";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { TbBuildingCircus } from "react-icons/tb";
 import { HiOfficeBuilding } from "react-icons/hi";
+import { chainIdToContractMap } from "@/context/allchains";
 
 export default function Details() {
   const { id } = useParams();
@@ -47,7 +48,9 @@ export default function Details() {
   const { walletProvider } = useWeb3ModalProvider();
   const [xHackToken, setXHackToken] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
-
+  //@ts-ignore
+  const contractDetails = chainIdToContractMap[chainId];
+  console.log(contractDetails)
   useEffect(() => {
     const getHackDetails = async () => {
       if (!walletProvider) {
@@ -56,42 +59,24 @@ export default function Details() {
       }
       const ethersProvider = new BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
-      if (chainId === 1115) {
-        console.log(chainId);
-        const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-        const tx = await resp.getHackathonDetails(id);
-        console.log(tx);
-        setHackDetails({
-          name: tx[0],
-          organizedBy: tx[1],
-          description: tx[2],
-          date: tx[3],
-          city: tx[4],
-          experience: tx[5],
-          category: tx[6],
-          hackers: Number(tx[7]),
-        });
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      } else if (chainId === 421614) {
-        console.log(chainId);
-        const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-        const tx = await resp.getHackathonDetails(id);
-        setHackDetails({
-          name: tx[0],
-          organizedBy: tx[1],
-          description: tx[2],
-          date: tx[3],
-          city: tx[4],
-          experience: tx[5],
-          category: tx[6],
-          hackers: Number(tx[7]),
-        });
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      }
+      const resp = new Contract(contractDetails?.address,
+        contractDetails?.abi, signer);
+      const tx = await resp.getHackathonDetails(id);
+      console.log(tx);
+      setHackDetails({
+        name: tx[0],
+        organizedBy: tx[1],
+        description: tx[2],
+        date: tx[3],
+        city: tx[4],
+        experience: tx[5],
+        category: tx[6],
+        hackers: Number(tx[7]),
+      });
+      const balance = await resp.balanceOf(address);
+      console.log(formatUnits(balance, 18));
+      setXHackToken(parseFloat(formatUnits(balance, 18)));
+
     };
 
     getHackDetails();
@@ -104,16 +89,11 @@ export default function Details() {
     }
     const ethersProvider = new BrowserProvider(walletProvider);
     const signer = await ethersProvider.getSigner();
+    const resp = new Contract(contractDetails?.address,
+      contractDetails?.abi, signer);
+    const tx = await resp.joinHackathon(id, { value: parseEther("0.002") });
+    await tx.wait();
 
-    if (chainId === 1115) {
-      const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-      const tx = await resp.joinHackathon(id, { value: parseEther("0.002") });
-      await tx.wait();
-    } else if (chainId === 421614) {
-      const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-      const tx = await resp.joinHackathon(id, { value: parseEther("0.002") });
-      await tx.wait();
-    }
   };
 
   const [sponsors, setSponsors] = useState([]);
@@ -125,25 +105,15 @@ export default function Details() {
       }
       const ethersProvider = new BrowserProvider(walletProvider);
       const signer = await ethersProvider.getSigner();
-      if (chainId === 1115) {
-        const resp = new Contract(
-          Ccontract_add,
-          CHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getHackathonSponsors(id);
-        console.log(tx);
-        setSponsors(tx);
-      } else if (chainId === 421614) {
-        const resp = new Contract(
-          Acontract_add,
-          AHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getHackathonSponsors(id);
-        console.log(tx);
-        setSponsors(tx);
-      }
+      const resp = new Contract(
+        contractDetails?.address,
+        contractDetails?.abi,
+        ethersProvider
+      );
+      const tx = await resp.getHackathonSponsors(id);
+      console.log(tx);
+      setSponsors(tx);
+
     };
     fetchSponsors();
   }, [chainId, address]);
@@ -241,11 +211,10 @@ export default function Details() {
             >
               <li className="me-2" role="presentation">
                 <button
-                  className={`inline-block p-4 rounded-t-lg ${
-                    activeTab === "details"
-                      ? "border-b-white border-b-4  text-white"
-                      : "hover:bg-[#3a3a3a]"
-                  }`}
+                  className={`inline-block p-4 rounded-t-lg ${activeTab === "details"
+                    ? "border-b-white border-b-4  text-white"
+                    : "hover:bg-[#3a3a3a]"
+                    }`}
                   id="profile-tab"
                   onClick={() => handleTabClick("details")}
                   role="tab"
@@ -257,11 +226,10 @@ export default function Details() {
               </li>
               <li className="me-2" role="presentation">
                 <button
-                  className={`inline-block p-4  rounded-t-lg  ${
-                    activeTab === "sponsors"
-                      ? " border-b-white border-b-4  text-white"
-                      : "hover:bg-[#3a3a3a]"
-                  }`}
+                  className={`inline-block p-4  rounded-t-lg  ${activeTab === "sponsors"
+                    ? " border-b-white border-b-4  text-white"
+                    : "hover:bg-[#3a3a3a]"
+                    }`}
                   id="settings-tab"
                   onClick={() => handleTabClick("sponsors")}
                   role="tab"
@@ -275,9 +243,8 @@ export default function Details() {
           </div>
           <div className="m-5" id="default-tab-content">
             <div
-              className={`p-4 rounded-lg  ${
-                activeTab === "details" ? "text-blue-500" : "hidden"
-              }`}
+              className={`p-4 rounded-lg  ${activeTab === "details" ? "text-blue-500" : "hidden"
+                }`}
               id="dashboard"
               role="tabpanel"
               aria-labelledby="dashboard-tab"
@@ -320,9 +287,8 @@ export default function Details() {
               </div>
             </div>
             <div
-              className={`relative p-4 rounded-lg ${
-                activeTab === "sponsors" ? "" : "hidden"
-              }`}
+              className={`relative p-4 rounded-lg ${activeTab === "sponsors" ? "" : "hidden"
+                }`}
               id="settings"
               role="tabpanel"
               aria-labelledby="settings-tab"

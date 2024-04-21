@@ -5,11 +5,9 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaStar } from "react-icons/fa6";
 
-interface VenueTimelineProps {
-  hackers: number;
-}
 
-const FoodTimeline = ({ hackers }: VenueTimelineProps) => {
+
+const FoodTimeline = ({ hackers }: any) => {
   const [glowClasses1, setGlowClasses1] = useState(false);
   const [glowClasses2, setGlowClasses2] = useState(false);
 

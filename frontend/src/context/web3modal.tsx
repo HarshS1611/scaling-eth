@@ -29,7 +29,7 @@ const gnosisTestnet = {
   rpcUrl: 'https://blockscout.chiadochain.net'
 };
 
-const availTestnet = {
+const coreTestnet = {
   chainId: 1115,
   name: 'Core testnet',
   currency: 'tCORE',
@@ -37,6 +37,29 @@ const availTestnet = {
   rpcUrl: 'https://rpc.test.btcs.network'
 };
 
+const morphTestnet = {
+  chainId: 2710,
+  name: 'Morph testnet',
+  currency: 'ETH',
+  explorerUrl: 'https://explorer-testnet.morphl2.io',
+  rpcUrl: 'https://rpc-testnet.morphl2.io'
+}
+
+const availTestnet = {
+  chainId: 202402021700,
+  name: 'Avail testnet',
+  currency: 'ETH',
+  explorerUrl: 'https://op-avail-sepolia-explorer.alt.technology:443',
+  rpcUrl: 'https://op-avail-sepolia.alt.technology'
+};
+
+const filcoinTestnet = {
+  chainId: 314159,
+  name: 'Filcoin testnet',
+  currency: 'tFIL',
+  explorerUrl: 'https://calibration.filscan.io',
+  rpcUrl: 'https://calibration.filfox.info/rpc/v1'
+}
 
 // 3. Create a metadata object
 const metadata = {
@@ -61,7 +84,7 @@ const ethersConfig = defaultConfig({
 // 5. Create a Web3Modal instance
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet,arbitrumTestnet,gnosisTestnet,availTestnet],
+  chains: [mainnet,arbitrumTestnet,gnosisTestnet,availTestnet,morphTestnet,filcoinTestnet,coreTestnet],
   projectId,
   allowUnsupportedChain: true,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration

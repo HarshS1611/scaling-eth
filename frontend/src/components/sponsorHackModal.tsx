@@ -11,6 +11,7 @@ import {
   useWeb3ModalAccount,
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers";
+import { chainIdToContractMap } from "@/context/allchains";
 
 interface ModalFormProps {
   isOpen: boolean;
@@ -30,7 +31,8 @@ const SponsorHackModal: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
   console.log(id);
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
-
+  //@ts-ignore
+  const contractDetails = chainIdToContractMap[chainId];
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(sponsorData);
@@ -40,30 +42,19 @@ const SponsorHackModal: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
     }
     const ethersProvider = new BrowserProvider(walletProvider);
     const signer = await ethersProvider.getSigner();
+    const resp = new Contract( contractDetails?.address,
+      contractDetails?.abi, signer);
+    const tx = await resp.sponsorHackathon(
+      id,
+      sponsorData.name,
+      sponsorData.threshold,
+      {
+        value: parseEther(sponsorData.price),
+      }
+    );
+    await tx.wait();
 
-    if (chainId === 1115) {
-      const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-      const tx = await resp.sponsorHackathon(
-        id,
-        sponsorData.name,
-        sponsorData.threshold,
-        {
-          value: parseEther(sponsorData.price),
-        }
-      );
-      await tx.wait();
-    } else if (chainId === 421614) {
-      const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-      const tx = await resp.sponsorHackathon(
-        id,
-        sponsorData.name,
-        sponsorData.threshold,
-        {
-          value: parseEther(sponsorData.price),
-        }
-      );
-      await tx.wait();
-    }
+
 
     // Example of using ethers.js to interact with the smart contract
     // console.log("Project created!", resp);
@@ -130,7 +121,7 @@ const SponsorHackModal: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
                   ETH
                 </div>
                 <input
-                  type="number"
+                  type="text"
                   className="w-full bg-[#1A1A1A] h-14 placeholder:text-[#838383] text-white rounded-md px-2 py-5 mt-2 mb-2 mr-10 text-sm focus:outline-none transition transform duration-100 ease-out"
                   value={sponsorData.price}
                   onChange={(e) =>

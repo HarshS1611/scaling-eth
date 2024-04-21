@@ -12,6 +12,7 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers";
 import { UploadIcon } from "@/assets/UploadIcon";
+import { chainIdToContractMap } from "@/context/allchains";
 
 interface ModalFormProps {
   modalOpen: boolean;
@@ -37,7 +38,8 @@ const CreateHackModal: React.FC<ModalFormProps> = ({
   console.log(id);
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
-
+  //@ts-ignore
+  const contractDetails = chainIdToContractMap[chainId];
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(hackData);
@@ -47,35 +49,20 @@ const CreateHackModal: React.FC<ModalFormProps> = ({
     }
     const ethersProvider = new BrowserProvider(walletProvider);
     const signer = await ethersProvider.getSigner();
-
-    if (chainId === 1115) {
-      const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-      const tx = await resp.createHackathon(
-        hackData._name,
-        hackData._organisedby,
-        hackData._description,
-        hackData._date,
-        hackData._city,
-        hackData._exp,
-        hackData._category,
-        { value: parseEther("0.005") }
-      );
-      await tx.wait();
-    } else if (chainId === 421614) {
-      const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-      const tx = await resp.createHackathon(
-        hackData._name,
-        hackData._organisedby,
-        hackData._description,
-        hackData._date,
-        hackData._city,
-        hackData._exp,
-        hackData._category,
-        { value: parseEther("0.005") }
-      );
-      await tx.wait();
-    }
-
+    const resp = new Contract( contractDetails?.address,
+      contractDetails?.abi, signer);
+    const tx = await resp.createHackathon(
+      hackData._name,
+      hackData._organisedby,
+      hackData._description,
+      hackData._date,
+      hackData._city,
+      hackData._exp,
+      hackData._category,
+      { value: parseEther("0.005") }
+    );
+    await tx.wait();
+  
     // Example of using ethers.js to interact with the smart contract
     // console.log("Project created!", resp);
   };
