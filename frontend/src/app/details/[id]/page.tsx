@@ -22,6 +22,9 @@ import { SiSecurityscorecard } from "react-icons/si";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { TbBuildingCircus } from "react-icons/tb";
 import { HiOfficeBuilding } from "react-icons/hi";
+import { useReadContract, useAccount, useSignMessage } from 'wagmi'
+import { chainIdToContractMap } from "@/context/allchains";
+import { useWriteContract } from 'wagmi'
 
 export default function Details() {
   const { id } = useParams();
@@ -43,110 +46,122 @@ export default function Details() {
   const handleTabClick = (tabId: any) => {
     setActiveTab(tabId);
   };
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
-  const [xHackToken, setXHackToken] = useState(0);
+
   const [showTooltip, setShowTooltip] = useState(false);
 
-  useEffect(() => {
-    const getHackDetails = async () => {
-      if (!walletProvider) {
-        console.log("Wallet provider is not available.");
-        return;
-      }
-      const ethersProvider = new BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      if (chainId === 1115) {
-        console.log(chainId);
-        const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-        const tx = await resp.getHackathonDetails(id);
-        console.log(tx);
-        setHackDetails({
-          name: tx[0],
-          organizedBy: tx[1],
-          description: tx[2],
-          date: tx[3],
-          city: tx[4],
-          experience: tx[5],
-          category: tx[6],
-          hackers: Number(tx[7]),
-        });
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      } else if (chainId === 421614) {
-        console.log(chainId);
-        const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-        const tx = await resp.getHackathonDetails(id);
-        setHackDetails({
-          name: tx[0],
-          organizedBy: tx[1],
-          description: tx[2],
-          date: tx[3],
-          city: tx[4],
-          experience: tx[5],
-          category: tx[6],
-          hackers: Number(tx[7]),
-        });
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      }
-    };
+  const { address, isConnected, chainId } = useAccount();
+  const { signMessage } = useSignMessage()
+  const [xHackToken, setXHackToken] = useState(0)
+  console.log(isConnected)
 
-    getHackDetails();
-  }, [chainId, address]);
+  const contractDetails = chainIdToContractMap[chainId];
+  // console.log(contractDetails)
+  const result = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "balanceOf",
+    args: [address],
+  });
+
+  const hacks = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "getHackathonDetails",
+    args: [id],
+
+  });
+  useEffect(() => {
+    console.log(hacks.data)
+    setHackDetails({
+      name: (hacks.data && hacks.data[0]) || "",
+      organizedBy: (hacks.data && hacks.data[1]) || "",
+      description: (hacks.data && hacks.data[2]) || "",
+      date: (hacks.data && hacks.data[3]) || "",
+      city: (hacks.data && hacks.data[4] as any) || "",
+      experience: (hacks.data && hacks.data[5] as any) || "",
+      category: (hacks.data && hacks.data[6] as any) || "",
+      hackers: Number(hacks.data && (hacks.data as any)[7]),
+    });
+    if (!result.data) return;
+    const bigNumber = BigInt(result.data);
+    const decimalNumber = bigNumber.toString();
+    console.log(decimalNumber);
+    console.log(formatUnits(decimalNumber, 18));
+    setXHackToken(parseFloat(formatUnits(decimalNumber, 18)));
+  }, [chainId, address, , result.data, hacks.data])
+
+  const { data: hash, writeContract } = useWriteContract() 
+
+
 
   const handleAddStake = async () => {
-    if (!walletProvider) {
-      console.log("Wallet provider is not available.");
-      return;
-    }
-    const ethersProvider = new BrowserProvider(walletProvider);
-    const signer = await ethersProvider.getSigner();
-
-    if (chainId === 1115) {
-      const resp = new Contract(Ccontract_add, CHackathonManager.abi, signer);
-      const tx = await resp.joinHackathon(id, { value: parseEther("0.002") });
-      await tx.wait();
-    } else if (chainId === 421614) {
-      const resp = new Contract(Acontract_add, AHackathonManager.abi, signer);
-      const tx = await resp.joinHackathon(id, { value: parseEther("0.002") });
-      await tx.wait();
-    }
+    console.log({
+      address: contractDetails?.address,
+      abi: contractDetails?.abi,
+      functionName: "joinHackathon",
+      value: 0.02,
+      chainId: chainId,
+  //    gas: 1000000, // Add a suitable gas value
+      args: [], // Add any required arguments here
+    })
+    // stake()
+    const stake = writeContract({
+      address: contractDetails?.address,
+      abi: contractDetails?.abi,
+      functionName: "joinHackathon",
+      // value: parseEther("0.002"),
+      chainId: chainId,
+  //    gas: 1000000, // Add a suitable gas value
+      args: [], // Add any required arguments here
+    });
+    console.log(stake)
+    console.log(1)
   };
 
   const [sponsors, setSponsors] = useState([]);
+
+  const sponsor = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "getHackathonSponsors",
+    args: [id],
+
+  });
+
   useEffect(() => {
-    const fetchSponsors = async () => {
-      if (!walletProvider) {
-        console.log("Wallet provider is not available.");
-        return;
-      }
-      const ethersProvider = new BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-      if (chainId === 1115) {
-        const resp = new Contract(
-          Ccontract_add,
-          CHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getHackathonSponsors(id);
-        console.log(tx);
-        setSponsors(tx);
-      } else if (chainId === 421614) {
-        const resp = new Contract(
-          Acontract_add,
-          AHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getHackathonSponsors(id);
-        console.log(tx);
-        setSponsors(tx);
-      }
-    };
-    fetchSponsors();
-  }, [chainId, address]);
+    console.log(sponsor.data)
+    setSponsors(sponsor.data);
+  }, [chainId, address, ,sponsor.data])
+  // useEffect(() => {
+  //   const fetchSponsors = async () => {
+  //     if (!walletProvider) {
+  //       console.log("Wallet provider is not available.");
+  //       return;
+  //     }
+  //     const ethersProvider = new BrowserProvider(walletProvider);
+  //     const signer = await ethersProvider.getSigner();
+  //     if (chainId === 1115) {
+  //       const resp = new Contract(
+  //         Ccontract_add,
+  //         CHackathonManager.abi,
+  //         ethersProvider
+  //       );
+  //       const tx = await resp.getHackathonSponsors(id);
+  //       console.log(tx);
+  //       setSponsors(tx);
+  //     } else if (chainId === 421614) {
+  //       const resp = new Contract(
+  //         Acontract_add,
+  //         AHackathonManager.abi,
+  //         ethersProvider
+  //       );
+  //       const tx = await resp.getHackathonSponsors(id);
+  //       console.log(tx);
+  //       setSponsors(tx);
+  //     }
+  //   };
+  //   fetchSponsors();
+  // }, [chainId, address]);
 
   return (
     <>
@@ -241,11 +256,10 @@ export default function Details() {
             >
               <li className="me-2" role="presentation">
                 <button
-                  className={`inline-block p-4 rounded-t-lg ${
-                    activeTab === "details"
-                      ? "border-b-white border-b-4  text-white"
-                      : "hover:bg-[#3a3a3a]"
-                  }`}
+                  className={`inline-block p-4 rounded-t-lg ${activeTab === "details"
+                    ? "border-b-white border-b-4  text-white"
+                    : "hover:bg-[#3a3a3a]"
+                    }`}
                   id="profile-tab"
                   onClick={() => handleTabClick("details")}
                   role="tab"
@@ -257,11 +271,10 @@ export default function Details() {
               </li>
               <li className="me-2" role="presentation">
                 <button
-                  className={`inline-block p-4  rounded-t-lg  ${
-                    activeTab === "sponsors"
-                      ? " border-b-white border-b-4  text-white"
-                      : "hover:bg-[#3a3a3a]"
-                  }`}
+                  className={`inline-block p-4  rounded-t-lg  ${activeTab === "sponsors"
+                    ? " border-b-white border-b-4  text-white"
+                    : "hover:bg-[#3a3a3a]"
+                    }`}
                   id="settings-tab"
                   onClick={() => handleTabClick("sponsors")}
                   role="tab"
@@ -275,9 +288,8 @@ export default function Details() {
           </div>
           <div className="m-5" id="default-tab-content">
             <div
-              className={`p-4 rounded-lg  ${
-                activeTab === "details" ? "text-blue-500" : "hidden"
-              }`}
+              className={`p-4 rounded-lg  ${activeTab === "details" ? "text-blue-500" : "hidden"
+                }`}
               id="dashboard"
               role="tabpanel"
               aria-labelledby="dashboard-tab"
@@ -320,9 +332,8 @@ export default function Details() {
               </div>
             </div>
             <div
-              className={`relative p-4 rounded-lg ${
-                activeTab === "sponsors" ? "" : "hidden"
-              }`}
+              className={`relative p-4 rounded-lg ${activeTab === "sponsors" ? "" : "hidden"
+                }`}
               id="settings"
               role="tabpanel"
               aria-labelledby="settings-tab"
@@ -354,7 +365,7 @@ export default function Details() {
                       />
                     </svg>
 
-                    {sponsors.length}
+                    {sponsors && sponsors.length}
                   </p>
                 </div>
                 <div className="flex flex-col gap-5 w-full bg-[#1E1E1E] rounded-md py-5 px-5">
@@ -399,7 +410,7 @@ export default function Details() {
                 </div>
               </div>
               <div className="grid grid-cols-2 mt-10 gap-5 w-full">
-                {sponsors.map((sponsor, index) => (
+                {sponsors && sponsors.map((sponsor, index) => (
                   <SponsorCard key={index} index={index} props={sponsor} />
                 ))}
               </div>

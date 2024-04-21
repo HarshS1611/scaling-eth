@@ -16,6 +16,8 @@ import {
 import { BrowserProvider, Contract, parseEther, formatUnits } from "ethers";
 import { useParams } from "next/navigation";
 import { GoOrganization } from "react-icons/go";
+import { useReadContract, useAccount, useSignMessage } from 'wagmi'
+import { chainIdToContractMap } from "@/context/allchains";
 
 const Home = () => {
   const { id } = useParams();
@@ -29,9 +31,7 @@ const Home = () => {
   const [selectedMiscOption, setSelectedMiscOption] = useState<string[]>([]);
 
   const [activeTab, setActiveTab] = useState("profile");
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
-  const [xHackToken, setXHackToken] = useState(0);
+
   const [hackDetails, setHackDetails] = useState({
     name: "EthMumbai",
     description:
@@ -44,65 +44,46 @@ const Home = () => {
     hackers: 2200,
   } as any);
 
+  const { address, isConnected, chainId } = useAccount();
+  const { signMessage } = useSignMessage()
+  const [xHackToken, setXHackToken] = useState(0)
+  console.log(isConnected)
+
+  const contractDetails = chainIdToContractMap[chainId];
+  // console.log(contractDetails)
+  const result = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "balanceOf",
+    args: [address],
+  });
+  const hacks = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "getHackathonDetails",
+    args: [id],
+
+  });
 
   useEffect(() => {
-    const fetchHackathons = async () => {
-      if (!walletProvider) {
-        console.log("Wallet provider is not available.");
-        return;
-      }
-      const ethersProvider = new BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
-
-      if (chainId === 1115) {
-        console.log(chainId);
-        const resp = new Contract(
-          Ccontract_add,
-          CHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getHackathonDetails(id);
-        console.log(tx)
-        setHackDetails({
-          name: tx[0],
-          organizedBy: tx[1],
-          description: tx[2],
-          date: tx[3],
-          city: tx[4],
-          experience: tx[5],
-          category: tx[6],
-          hackers: Number(tx[7]),
-        });
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      } else if (chainId === 421614) {
-        console.log(chainId);
-        const resp = new Contract(
-          Acontract_add,
-          AHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getHackathonDetails(id);
-        console.log(tx)
-        setHackDetails({
-          name: tx[0],
-          organizedBy: tx[1],
-          description: tx[2],
-          date: tx[3],
-          city: tx[4],
-          experience: tx[5],
-          category: tx[6],
-          hackers: Number(tx[7]),
-        });
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      }
-    };
-
-    fetchHackathons();
-  }, [walletProvider, chainId]);
+    console.log(hacks.data)
+    setHackDetails({
+      name: (hacks.data && hacks.data[0]) || "",
+      organizedBy: (hacks.data && hacks.data[1]) || "",
+      description: (hacks.data && hacks.data[2]) || "",
+      date: (hacks.data && hacks.data[3]) || "",
+      city: (hacks.data && hacks.data[4] as any) || "",
+      experience: (hacks.data && hacks.data[5] as any) || "",
+      category: (hacks.data && hacks.data[6] as any) || "",
+      hackers: Number(hacks.data && (hacks.data as any)[7]),
+    });
+    if (!result.data) return;
+    const bigNumber = BigInt(result.data);
+    const decimalNumber = bigNumber.toString();
+    console.log(decimalNumber);
+    console.log(formatUnits(decimalNumber, 18));
+    setXHackToken(parseFloat(formatUnits(decimalNumber, 18)));
+  }, [chainId, address, , result.data, hacks.data])
 
 
   const handleTabClick = (tabId: any) => {

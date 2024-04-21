@@ -16,28 +16,13 @@ import {
 } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { http } from 'viem';
-import { mainnet, optimism, base } from 'viem/chains';
-
+import { mainnet, polygon, arbitrumSepolia,gnosisChiado,filecoinCalibration } from 'viem/chains';
+import { morph,avail,core } from "@/context/chains";
 const inter = Inter({ subsets: ["latin"] });
 
 
 const evmNetworks = [
-  {
-    blockExplorerUrls: ['https://etherscan.io/'],
-    chainId: 1,
-    chainName: 'Ethereum Mainnet',
-    iconUrls: ['https://app.dynamic.xyz/assets/networks/eth.svg'],
-    name: 'Ethereum',
-    nativeCurrency: {
-      decimals: 18,
-      name: 'Ether',
-      symbol: 'ETH',
-    },
-    networkId: 1,
 
-    rpcUrls: ['https://mainnet.infura.io/v3/'],
-    vanityName: 'ETH Mainnet',
-  },
   {
     blockExplorerUrls: ['https://sepolia-explorer.arbitrum.io'],
     chainId: 421614,
@@ -69,6 +54,51 @@ const evmNetworks = [
     vanityName: 'Gnosis Chiado Testnet',
   },
   {
+    blockExplorerUrls: ['https://explorer-testnet.morphl2.io/'],
+    chainId: 2710,
+    chainName: 'Morph testnet',
+    iconUrls: [],
+    name: 'Morph',
+    nativeCurrency: {
+      decimals: 18,
+      name: 'ETH',
+      symbol: 'ETH',
+    },
+    networkId: 2710,
+    rpcUrls: ['https://rpc-testnet.morphl2.io'],
+    vanityName: 'Morph testnet',
+  },
+  {
+    blockExplorerUrls: ['https://op-avail-sepolia-explorer.alt.technology:443'],
+    chainId: 202402021700,
+    chainName: 'OP Avail Sepolia Testnet',
+    iconUrls: [],
+    name: 'Avail',
+    nativeCurrency: {
+      decimals: 18,
+      name: 'ETH',
+      symbol: 'ETH',
+    },
+    networkId: 202402021700,
+    rpcUrls: ['https://op-avail-sepolia.alt.technology'],
+    vanityName: 'OP Avail Sepolia Testnet',
+  },
+  {
+    blockExplorerUrls: ['https://calibration.filscan.io'],
+    chainId: 314159,
+    chainName: 'Core testnet',
+    iconUrls: [],
+    name: 'Filecoin - Calibration testnet',
+    nativeCurrency: {
+      decimals: 18,
+      name: 'tFIL',
+      symbol: 'tFIL',
+    },
+    networkId: 314159,
+    rpcUrls: ['https://calibration.filfox.info/rpc/v1'],
+    vanityName: 'Filecoin - Calibration testnet',
+  },
+  {
     blockExplorerUrls: ['https://cchain.explorer.avax-test.network'],
     chainId: 1115,
     chainName: 'Core testnet',
@@ -87,10 +117,16 @@ const evmNetworks = [
 ];
 
 const config = createConfig({
-  chains: [mainnet],
+  chains: [arbitrumSepolia,gnosisChiado,filecoinCalibration,morph,avail,core],
   multiInjectedProviderDiscovery: false,
   transports: {
-    [mainnet.id]: http("https://mainnet.example.com"),
+
+    [arbitrumSepolia.id]: http(),
+    [gnosisChiado.id]: http(),
+    [filecoinCalibration.id]: http(),
+    [morph.id]: http(),
+    [avail.id]: http(),
+    [core.id]: http()
   },
 });
 const queryClient = new QueryClient();
@@ -100,9 +136,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <DynamicContextProvider
+        theme='dark'
         settings={{
           environmentId: 'd7fe1295-6941-440a-9270-e92cef801844',
           walletConnectors: [EthereumWalletConnectors],
+          overrides: {evmNetworks}
         }}
       >
         <WagmiProvider config={config}>

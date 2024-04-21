@@ -5,7 +5,7 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { AiFillTrophy } from "react-icons/ai";
 import { SiSecurityscorecard } from "react-icons/si";
 
-export default function ProfileSidbar({ balance }: { balance: number }) {
+export default function ProfileSidbar({ balance }: { balance?: number }) {
   return (
     <div className="bg-[#282828] min-h-screen w-[25%]">
       <div className="flex items-center mx-10 my-5 justify-end text-white">

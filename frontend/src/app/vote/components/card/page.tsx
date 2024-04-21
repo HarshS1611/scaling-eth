@@ -11,6 +11,9 @@ import {
   useWeb3ModalAccount,
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, parseEther } from "ethers";
+import { useReadContract, useAccount, useSignMessage } from 'wagmi'
+import { chainIdToContractMap } from "@/context/allchains";
+import { useWriteContract } from 'wagmi'
 
 const Card = ({ title, map, tag1, tag2, description, voters, onClick }: any) => {
   const [voteCount, setVoteCount] = useState(0);
@@ -19,48 +22,74 @@ const Card = ({ title, map, tag1, tag2, description, voters, onClick }: any) => 
     const newVoteCount = parseInt(event.target.value, 10);
     setVoteCount(newVoteCount);
   };
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
+  const { address, isConnected, chainId } = useAccount();
+  const { signMessage } = useSignMessage()
+  const [xHackToken, setXHackToken] = useState(0)
+  console.log(isConnected)
+  const contractDetails = chainIdToContractMap[chainId];
+
+
+  const balance = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "balanceOf",
+    args: [address],
+
+  });
+  const approval = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "approve",
+    args: [contractDetails?.address,balance],
+
+  });
+  const resp = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "transferTokensToContract",
+    args: [parseEther(voteCount.toString())],
+
+  });
+  console.log(resp)
+  onClick();
   const vote = async () => {
-    if (!walletProvider) {
-      console.log("Wallet provider is not available.");
-      return;
-    }
-    const ethersProvider = new BrowserProvider(walletProvider);
-    const signer = await ethersProvider.getSigner();
-
-    if (chainId === 1115) {
-      console.log(chainId);
-      const resp = new Contract(
-        Ccontract_add,
-        CHackathonManager.abi,
-        signer
-      );
-      const balance = await resp.balanceOf(address);
-      const approval = await resp.approve(Ccontract_add, balance);
-      const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
-      await tx.wait();
-      console.log(tx);
-
-    } else if (chainId === 421614) {
-      console.log(chainId);
-      const resp = new Contract(
-        Acontract_add,
-        AHackathonManager.abi,
-        signer
-      );
-      const balance = await resp.balanceOf(address);
-
-      const approval = await resp.approve(Acontract_add, balance);
-      const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
-      await tx.wait();
-      console.log(tx);
-    }
-
-
-
     onClick();
-  };
+  }
+  // const vote = async () => {
+
+
+  //   if (chainId === 1115) {
+  //     console.log(chainId);
+  //     const resp = new Contract(
+  //       Ccontract_add,
+  //       CHackathonManager.abi,
+  //       signer
+  //     );
+  //     const balance = await resp.balanceOf(address);
+  //     const approval = await resp.approve(Ccontract_add, balance);
+  //     const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
+  //     await tx.wait();
+  //     console.log(tx);
+
+  //   } else if (chainId === 421614) {
+  //     console.log(chainId);
+  //     const resp = new Contract(
+  //       Acontract_add,
+  //       AHackathonManager.abi,
+  //       signer
+  //     );
+  //     const balance = await resp.balanceOf(address);
+
+  //     const approval = await resp.approve(Acontract_add, balance);
+  //     const tx = await resp.transferTokensToContract(parseEther(voteCount.toString()));
+  //     await tx.wait();
+  //     console.log(tx);
+  //   }
+
+
+
+  //   onClick();
+  // };
 
   return (
     <div className="relative dm-mono-regular py-4 bg-[#1A1A1A] h-full w-[40%] rounded-[20px] shadow-xl">

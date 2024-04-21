@@ -4,16 +4,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/navbar";
 import Image from "next/image";
-import AHackathonManager from "../artifacts/contracts/HackathonManager.sol/AHackathonManager.json";
-import CHackathonManager from "../artifacts/contracts/HackathonManager.sol/CHackathonManager.json";
-import { Acontract_add, Ccontract_add } from "../artifacts/config";
-import {
-  useWeb3ModalProvider,
-  useWeb3ModalAccount,
-} from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, formatUnits } from "ethers";
 import HackathonCard from "@/components/HackathonCard";
 import ProfileSidbar from "@/components/profileSidebar";
+import { useReadContract, useAccount, useSignMessage } from 'wagmi'
+import { chainIdToContractMap } from "@/context/allchains";
 
 export default function Home() {
   const [hackathons, setHackathons] = useState<
@@ -25,47 +20,43 @@ export default function Home() {
       status?: string;
     }[]
   >([]);
-  const [xHackToken, setXHackToken] = useState(0);
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
+  const { address, isConnected, chainId } = useAccount();
+  const { signMessage } = useSignMessage()
+  const [xHackToken, setXHackToken] = useState(0)
+  console.log(isConnected)
+
+  const contractDetails = chainIdToContractMap[chainId];
+  console.log(contractDetails)
+  const result = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "balanceOf",
+    args: [address],
+  });
+
+  const hacks = useReadContract({
+    abi: contractDetails?.abi,
+    address: contractDetails?.address,
+    functionName: "getAllHackathons",
+  });
+
+
   useEffect(() => {
-    const fetchHackathons = async () => {
-      if (!walletProvider) {
-        console.log("Wallet provider is not available.");
-        return;
-      }
-      const ethersProvider = new BrowserProvider(walletProvider);
-      const signer = await ethersProvider.getSigner();
+    if (!contractDetails) {
+      console.log("No contract details found for the current chainId");
+      return;
+    }
 
-      if (chainId === 1115) {
-        console.log(chainId);
-        const resp = new Contract(
-          Ccontract_add,
-          CHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getAllHackathons();
-        setHackathons(tx);
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      } else if (chainId === 421614) {
-        console.log(chainId);
-        const resp = new Contract(
-          Acontract_add,
-          AHackathonManager.abi,
-          ethersProvider
-        );
-        const tx = await resp.getAllHackathons();
-        setHackathons(tx);
-        const balance = await resp.balanceOf(address);
-        console.log(formatUnits(balance, 18));
-        setXHackToken(parseFloat(formatUnits(balance, 18)));
-      }
-    };
-
-    fetchHackathons();
-  }, [walletProvider, chainId]);
+    console.log(hacks.data);
+    setHackathons(hacks.data);
+    console.log(result.data);
+    if (!result.data) return;
+    const bigNumber = BigInt(result.data);
+    const decimalNumber = bigNumber.toString();
+    console.log(decimalNumber);
+    console.log(formatUnits(decimalNumber, 18));
+    setXHackToken(parseFloat(formatUnits(decimalNumber, 18)));
+  }, [chainId, address, contractDetails, result.data, hacks.data]);
 
   return (
     <main className="">
@@ -99,12 +90,12 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap justify-start mx-20 w-full gap-x-5 items-center">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:w-[90%] xl:grid-cols-3 gap-6 xl:gap-10 my-2">
-              {hackathons.map((hackathon, index) => (
+              {hackathons?.map((hackathon, index) => (
                 <HackathonCard index={index} props={hackathon} />
               ))}
-              {hackathons.map((hackathon, index) => (
+              {/* {hackathons.map((hackathon, index) => (
                 <HackathonCard index={index} props={hackathon} />
-              ))}
+              ))} */}
             </div>
           </div>
         </div>

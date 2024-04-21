@@ -13,6 +13,7 @@ import {
   createConfig,
   WagmiProvider,
   useAccount,
+  useBalance
 } from 'wagmi';
 
 
@@ -50,7 +51,6 @@ export default function Navbar(props: NavProps) {
       </div>
       <div className="flex justify-end w-max">
       <DynamicWidget />
-            <AccountInfo />
       </div>
       {modalOpen && (
         <CreateHackModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
@@ -60,7 +60,10 @@ export default function Navbar(props: NavProps) {
 }
 function AccountInfo() {
   const { address, isConnected, chain } = useAccount();
-  console.log(chain)
+  const result = useBalance({
+    address: address,
+  })
+  // console.log(result)
   return (
     <div>
       <p>

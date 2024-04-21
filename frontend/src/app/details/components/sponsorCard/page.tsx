@@ -20,8 +20,8 @@ const SponsorCard = ({ index, props }: any) => {
                             <div className={`text-xs font-medium text-white bg-[#282828] px-3 rounded-md p-2`}>
                                 <div className="flex gap-x-2 items-center">
                                     {/* <Image src="/assets/demo-icon.svg" width={15} height={15} alt="demo" /> */}
-                                    <p className="text-xs hidden xl:block">{(props[0]).substring(0, 20)}....</p>
-                                    <p className="text-xs xl:hidden">{(props[0]).substring(0, 10)}....</p>
+                                    <p className="text-xs hidden xl:block">{props[0] && (props[0]).substring(0, 20)}....</p>
+                                    <p className="text-xs xl:hidden">{props[0] && (props[0]).substring(0, 10)}....</p>
                                 </div>
                             </div>
                         </div>
