@@ -12,12 +12,9 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers";
 
-interface ModalFormProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
-const SponsorHackModal: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
+
+const SponsorHackModal= ({ isOpen, onClose }: any) => {
   const initialData = {
     hackId: "",
     name: "",

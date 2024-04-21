@@ -1,4 +1,6 @@
 // components/Question.js
+"use client";
+
 import React,{useState} from "react";
 import Card from "../card/page";
 import MiscCard from "../miscCard/page";
@@ -11,13 +13,7 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, parseEther } from "ethers";
 
-interface QuestionProps {
-  question: string;
-  options: string[];
-  onOptionSelect: (option: string) => void;
-}
-
-const MiscQuestion: React.FC<QuestionProps> = ({question, options, onOptionSelect }) => {
+const MiscQuestion= ({question, options, onOptionSelect }: any) => {
   const [voteCount, setVoteCount] = useState(0);
   const handleVoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Parse the input value as a number and update the voteCount state

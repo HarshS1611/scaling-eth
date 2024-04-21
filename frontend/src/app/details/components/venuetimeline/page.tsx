@@ -1,4 +1,4 @@
-"use strict";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
@@ -6,11 +6,8 @@ import { FaBuildingColumns } from "react-icons/fa6";
 import { TbBuildingCircus } from "react-icons/tb";
 import { HiOfficeBuilding } from "react-icons/hi";
 
-interface VenueTimelineProps {
-  hackers: number;
-}
 
-const VenueTimeline = ({ hackers }: VenueTimelineProps) => {
+const VenueTimeline = ({ hackers }: any) => {
   const [glowClasses1, setGlowClasses1] = useState(false);
   const [glowClasses2, setGlowClasses2] = useState(false);
   const [venueVotes, setVenueVotes] = useState(0);

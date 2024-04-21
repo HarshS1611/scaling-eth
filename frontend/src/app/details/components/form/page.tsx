@@ -3,11 +3,8 @@
 import React from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 
-interface ModalFormProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
+
+const ModalForm = ({ isOpen, onClose }: any) => {
   if (!isOpen) return null;
   return (
     <div className="flex justify-center fixed z-10 p-10  inset-0 ">

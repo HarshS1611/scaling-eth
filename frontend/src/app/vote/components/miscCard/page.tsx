@@ -12,14 +12,7 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, parseEther } from "ethers";
 
-interface CardProps {
-  title: string;
-  map: string;
-  voters: string;
-  onClick: () => void;
-}
-
-const MiscCard: React.FC<CardProps> = ({ title, map, voters, onClick }) => {
+const MiscCard = ({ title, map, voters, onClick }: any) => {
    const [voteCount, setVoteCount] = useState(0);
   const handleVoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Parse the input value as a number and update the voteCount state

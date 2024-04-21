@@ -13,15 +13,12 @@ import {
 import { BrowserProvider, Contract, formatUnits, parseEther } from "ethers";
 import { UploadIcon } from "@/assets/UploadIcon";
 
-interface ModalFormProps {
-  modalOpen: boolean;
-  setModalOpen: (open: boolean) => void;
-}
 
-const CreateHackModal: React.FC<ModalFormProps> = ({
+
+const CreateHackModal = ({
   modalOpen,
   setModalOpen,
-}) => {
+}: any) => {
   const initialHackData = {
     _name: "",
     _organisedby: "",

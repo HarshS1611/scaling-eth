@@ -1,4 +1,6 @@
 // components/Question.js
+"use client";
+
 import React, { useState } from "react";
 import Card from "../card/page";
 import AHackathonManager from "../../../../artifacts/contracts/HackathonManager.sol/AHackathonManager.json";
@@ -11,14 +13,8 @@ import {
 import { BrowserProvider, Contract, parseEther } from "ethers";
 import FoodCard from "../foodCard/page";
 
-interface QuestionProps {
-  selectedVenueOption: string[];
-  question: string;
-  options: string[];
-  onOptionSelect: (option: string) => void;
-}
 
-const Question: React.FC<QuestionProps> = ({ selectedVenueOption, question, options, onOptionSelect }) => {
+const Question = ({ selectedVenueOption, question, options, onOptionSelect }: any) => {
 
   const [voteCount, setVoteCount] = useState(0);
   const handleVoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
